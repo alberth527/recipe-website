@@ -1,35 +1,40 @@
 import { useState } from 'react'
+import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import RecipeList from './pages/RecipeList';
+import Login from './/pages/Login';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <Router>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          魔法食譜
+          </Typography>
+          <Button color="inherit" component={Link} to="/">Home</Button>
+          <Button color="inherit" component={Link} to="/recipes">Recipes</Button>
+          <Button color="inherit" component={Link} to="/login">Login</Button>
+        </Toolbar>
+      </AppBar>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/recipes" element={<RecipeList />} />
+        <Route path="/login" element={<Login />} />
+  
+      </Routes>
+    </Router>
+  );
+  
 }
 
 export default App
