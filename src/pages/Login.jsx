@@ -1,15 +1,34 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+    let navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // 在這裡處理登入邏輯，例如發送請求到服務器
+     // 檢查帳號和密碼
+  if (email === 'demo' && password === 'demo') {
+   
+    // 登錄成功，導航到"recipes"頁面
+     localStorage.setItem('isLoggedIn', true);
+      navigate('/');
+  } else {
+    // 登入失敗
+    console.log('Invalid username or password');
+  }
     console.log('Login details', { email, password });
   };
+   const handleLogout = () => {
+    // 在這裡添加你的登出邏輯
+    // 例如，清除用戶的登錄狀態，然後導航到登錄頁面
+     localStorage.removeItem('isLoggedIn');
+   
+    navigate('/login');
+  };
+  
 
   return (
     <Container component="main" maxWidth="xs">
@@ -57,6 +76,7 @@ function Login() {
           >
             Sign In
           </Button>
+                <Button onClick={handleLogout}>Logout</Button>
         </Box>
       </Box>
     </Container>
