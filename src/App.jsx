@@ -1,5 +1,5 @@
 import { useState ,useEffect } from 'react'
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { Grid } from '@mui/material';
 
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
@@ -22,17 +22,28 @@ function App() {
     checkLoginStatus();
   }, []);
 
-  return (
-      <Router>
-          <AppDrawer /> 
+   
+    
+    
+     return (
+  <>
+      <Grid container spacing={3}>
+      <Grid item xs={12} sm={6} md={24} >
+        <Router>
+      <AppDrawer /> 
 
       <Routes>
         <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
         <Route path="/recipes" element={<RecipeList />} />
         <Route path="/login" element={<Login />} />
-  
       </Routes>
     </Router>
+      </Grid>
+     
+    </Grid>
+   
+  </>
+
   );
   
 }
