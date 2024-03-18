@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -6,6 +6,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ChatIcon from '@mui/icons-material/Chat';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout'; // 导入登出图标
+
+import { useNavigate } from 'react-router-dom'; // 如果你使用React Router
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -50,9 +53,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function AppDrawer() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+ 
+  const navigate = useNavigate(); // 如果你使用React Router
+   const [userId,setUserId  ] = useState(null);
+     useEffect(() => {
+    // 当组件加载时获取用户信息
+    const userId = localStorage.getItem('userId');
+    setUserId(userId);
+
+
+  }, []);
+
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
+  };
+   // 登出函数
+  const handleLogout = () => {
+    // 清除localStorage中的用户信息或执行其他登出逻辑
+    localStorage.removeItem('isLoggedIn'); 
+     localStorage.removeItem('userId'); 
+    // 登出后重定向到登录页
+    navigate('/login'); // 使用React Router进行页面跳转
   };
 
   return (
@@ -85,6 +107,14 @@ export default function AppDrawer() {
       </AppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
         <List>
+            
+          <ListItem>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary={`Hello ${userId|| '訪客'}`} />
+          </ListItem>
+        
           <ListItem button>
             <ListItemIcon><AccountCircleIcon /></ListItemIcon>
             <ListItemText primary="我的收藏" />
@@ -96,6 +126,10 @@ export default function AppDrawer() {
           <ListItem button>
             <ListItemIcon><SettingsIcon /></ListItemIcon>
             <ListItemText primary="設置" />
+          </ListItem>
+               <ListItem button onClick={handleLogout}>
+            <ListItemIcon><LogoutIcon /></ListItemIcon>
+            <ListItemText primary="登出" />
           </ListItem>
         </List>
       </Drawer>

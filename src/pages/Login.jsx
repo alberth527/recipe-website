@@ -14,20 +14,17 @@ function Login() {
    
     // 登錄成功，導航到"recipes"頁面
      localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('userId', email);
       navigate('/');
+      //reload page
+      window.Location.reload();
   } else {
     // 登入失敗
     console.log('Invalid username or password');
   }
     console.log('Login details', { email, password });
   };
-   const handleLogout = () => {
-    // 在這裡添加你的登出邏輯
-    // 例如，清除用戶的登錄狀態，然後導航到登錄頁面
-     localStorage.removeItem('isLoggedIn');
-   
-    navigate('/login');
-  };
+
   
 
   return (
@@ -76,7 +73,7 @@ function Login() {
           >
             Sign In
           </Button>
-                <Button onClick={handleLogout}>Logout</Button>
+               
         </Box>
       </Box>
     </Container>
