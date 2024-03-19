@@ -78,8 +78,8 @@ export default function AppDrawer() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1,mt:0, }}>
+      <AppBar position="relative">
         <Toolbar>
           <IconButton
             size="large"
