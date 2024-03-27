@@ -33,7 +33,7 @@ function App() {
       <AppDrawer  sx={{mt:0}}/> 
 
       <Routes>
-        <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
+        <Route path="/" element={ <Home /> } />
         <Route path="/recipes" element={<RecipeList />} />
         <Route path="/login" element={<Login />} />
       </Routes>

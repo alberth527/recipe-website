@@ -73,8 +73,8 @@ export default function AppDrawer() {
     // 清除localStorage中的用户信息或执行其他登出逻辑
     localStorage.removeItem('isLoggedIn'); 
      localStorage.removeItem('userId'); 
-    // 登出后重定向到登录页
-    navigate('/login'); // 使用React Router进行页面跳转
+    // 登出后重定向到home页
+    navigate('/home'); //使用React Router进行页面跳转
   };
 
   return (
@@ -107,30 +107,36 @@ export default function AppDrawer() {
       </AppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
         <List>
-            
+           
           <ListItem>
             <ListItemIcon>
               <AccountCircleIcon />
             </ListItemIcon>
             <ListItemText primary={`Hello ${userId|| '訪客'}`} />
           </ListItem>
-        
           <ListItem button>
             <ListItemIcon><AccountCircleIcon /></ListItemIcon>
             <ListItemText primary="我的收藏" />
           </ListItem>
+      
+        {userId&&(
           <ListItem button>
             <ListItemIcon><ChatIcon /></ListItemIcon>
             <ListItemText primary="我的食譜" />
           </ListItem>
+        )}
+          {userId&&(
           <ListItem button>
             <ListItemIcon><SettingsIcon /></ListItemIcon>
             <ListItemText primary="設置" />
           </ListItem>
+        )}
+          {userId&&(
                <ListItem button onClick={handleLogout}>
             <ListItemIcon><LogoutIcon /></ListItemIcon>
             <ListItemText primary="登出" />
           </ListItem>
+          )}
         </List>
       </Drawer>
     </Box>
