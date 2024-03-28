@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import RecipeList from './pages/RecipeList';
 import Login from './pages/Login';
+import RecipeDetail from './pages/RecipeDetail';
 import AppDrawer from './Components/AppDrawer';
 
 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/" element={ <Home /> } />
         <Route path="/recipes" element={<RecipeList />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/recipe/:id" element={<RecipeDetail />} />
       </Routes>
     </Router>
       </Grid>
