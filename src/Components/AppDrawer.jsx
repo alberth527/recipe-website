@@ -3,8 +3,10 @@ import { styled, alpha } from '@mui/material/styles';
 import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ChatIcon from '@mui/icons-material/Chat';
+
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout'; // 导入登出图标
 
@@ -108,23 +110,18 @@ export default function AppDrawer() {
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
         <List>
            
-          <ListItem>
-            <ListItemIcon>
-              <AccountCircleIcon />
-            </ListItemIcon>
-            <ListItemText primary={`Hello ${userId|| '訪客'}`} />
-          </ListItem>
+    
            {userId&&(
           <ListItem button>
-            <ListItemIcon><AccountCircleIcon /></ListItemIcon>
+            <ListItemIcon><StarBorderIcon /></ListItemIcon>
             <ListItemText primary="我的收藏" />
           </ListItem>
         )}
       
         {userId&&(
           <ListItem button>
-            <ListItemIcon><ChatIcon /></ListItemIcon>
-            <ListItemText primary="我的食譜" />
+            <ListItemIcon><LocalDiningIcon /></ListItemIcon>
+            <ListItemText primary="我的私房菜" />
           </ListItem>
         )}
           {userId&&(
