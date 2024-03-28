@@ -74,7 +74,7 @@ export default function AppDrawer() {
     localStorage.removeItem('isLoggedIn'); 
      localStorage.removeItem('userId'); 
     // 登出后重定向到home页
-    navigate('/home'); //使用React Router进行页面跳转
+    navigate('/'); //使用React Router进行页面跳转
   };
 
   return (
@@ -114,10 +114,12 @@ export default function AppDrawer() {
             </ListItemIcon>
             <ListItemText primary={`Hello ${userId|| '訪客'}`} />
           </ListItem>
+           {userId&&(
           <ListItem button>
             <ListItemIcon><AccountCircleIcon /></ListItemIcon>
             <ListItemText primary="我的收藏" />
           </ListItem>
+        )}
       
         {userId&&(
           <ListItem button>
