@@ -109,19 +109,26 @@ const recipeDetails = {
 
 // RecipeDetail組件
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, CardMedia, CardContent, List, ListItem } from '@mui/material';
 
 function RecipeDetail() {
   const { id } = useParams(); // 獲取路由參數中的食譜ID
   const recipe = recipeDetails[id]; // 從食譜詳細數據中獲取對應的食譜信息
 
+ const navigate = useNavigate();
+
   if (!recipe) {
     return <Typography variant="h5">食譜不存在</Typography>;
   }
 
+  const handleBack = () => {
+     navigate(-1);
+  };
+
   return (
     <Box sx={{ my: 4 }}>
+       <button onClick={handleBack}>回上一頁</button>
       <Typography variant="h4" component="h1" gutterBottom>
         {recipe.title}
       </Typography>
