@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import RecipeList from './pages/RecipeList';
 import Login from './pages/Login';
 import RecipeDetail from './pages/RecipeDetail';
+import MyRecipes from './pages/MyRecipes';
 import AppDrawer from './Components/AppDrawer';
 
 
@@ -38,6 +39,7 @@ function App() {
         <Route path="/recipes" element={<RecipeList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/recipe/:id" element={<RecipeDetail />} />
+          <Route path="/my-recipes" element={<MyRecipes />} />
       </Routes>
     </Router>
       </Grid>

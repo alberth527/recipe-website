@@ -10,7 +10,7 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout'; // 导入登出图标
 
-import { useNavigate } from 'react-router-dom'; // 如果你使用React Router
+import { useNavigate,Link } from 'react-router-dom'; // 如果你使用React Router
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -119,10 +119,10 @@ export default function AppDrawer() {
         )}
       
         {userId&&(
-          <ListItem button>
-            <ListItemIcon><LocalDiningIcon /></ListItemIcon>
-            <ListItemText primary="我的私房菜" />
-          </ListItem>
+       <ListItem button component={Link} to="/my-recipes">
+      <ListItemIcon><LocalDiningIcon /></ListItemIcon>
+      <ListItemText primary="我的私房菜" />
+    </ListItem>
         )}
           {userId&&(
           <ListItem button>
