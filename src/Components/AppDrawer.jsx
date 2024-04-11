@@ -9,6 +9,7 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout'; // 导入登出图标
+import HomeIcon from '@mui/icons-material/Home';// 导入主页图标
 
 import { useNavigate,Link } from 'react-router-dom'; // 如果你使用React Router
 
@@ -109,6 +110,12 @@ export default function AppDrawer() {
       </AppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
         <List>
+                 {userId&&(
+       <ListItem button component={Link} to="/">
+      <ListItemIcon><HomeIcon /></ListItemIcon>
+      <ListItemText primary="首頁" />
+    </ListItem>
+        )}
            
     
            {userId&&(
