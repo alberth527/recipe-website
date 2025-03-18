@@ -1,55 +1,234 @@
-import React, { useState } from 'react';
-import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, TextField, DialogContent, DialogActions, Button, CardMedia, CircularProgress } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
-// 初始食谱数据
-const initialRecipes = [
-  { id: 1, title: 'Spaghetti Carbonara', description: 'A classic Italian pasta dish.' },
-  { id: 2, title: 'Margherita Pizza', description: 'Simple yet delicious.' },
-  { id: 3, title: 'Vegetable Stir Fry', description: 'A quick and healthy meal.' },
-];
-
 function MyRecipes() {
-  const [recipes, setRecipes] = useState(initialRecipes);
+  const [recipes, setRecipes] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [currentRecipe, setCurrentRecipe] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 從 API 取得菜譜資料
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch('http://localhost:5066/api/Recipe');
+        
+        if (!response.ok) {
+          throw new Error(`API 回應錯誤: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('獲取到的菜譜資料:', data);
+        
+        // Ensure we're setting an array
+        if (Array.isArray(data.data)) {
+          setRecipes(data.data);
+        } else {
+          console.error('API 回傳的資料不是陣列:', data);
+          setError('API 回傳的資料格式不正確');
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('獲取菜譜資料時發生錯誤:', error);
+        setError('無法載入菜譜資料，請稍後再試。');
+        setLoading(false);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
 
   // 删除食谱
-  const handleDelete = (id) => {
-    setRecipes(recipes.filter(recipe => recipe.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5066/api/Recipe/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`刪除失敗: ${response.status}`);
+      }
+      
+      setRecipes(recipes.filter(recipe => recipe.id !== id));
+    } catch (error) {
+      console.error('刪除菜譜時發生錯誤:', error);
+      // 可以在這裡加入錯誤處理，例如顯示錯誤訊息
+    }
   };
 
   // 添加和编辑食谱的逻辑在这里实现
-  // 注意: 这里仅展示了删除操作作为示例
+  const handleEditClick = (recipe) => {
+    setCurrentRecipe(recipe);
+    setOpenDialog(true);
+  };
+
+  const handleAddClick = () => {
+    setCurrentRecipe({});
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleSave = async () => {
+    try {
+      let url = 'http://localhost:5066/api/Recipe';
+      let method = 'POST';
+      
+      if (currentRecipe.id) {
+        url = `${url}`;
+        method = 'patch';
+      }
+      
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentRecipe),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`儲存失敗: ${response.status}`);
+      }
+      
+      // 重新獲取菜譜資料以取得最新狀態
+      const updatedResponse = await fetch('http://localhost:5066/api/Recipe');
+      if (!updatedResponse.ok) {
+        throw new Error(`重新獲取失敗: ${updatedResponse.status}`);
+      }
+      
+      const updatedData = await updatedResponse.json();
+      if (Array.isArray(updatedData)) {
+        setRecipes(updatedData);
+      }
+      
+      setOpenDialog(false);
+    } catch (error) {
+      console.error('儲存菜譜時發生錯誤:', error);
+      // 可以在這裡加入錯誤處理，例如顯示錯誤訊息
+    }
+  };
+
+  // Debug info
+  console.log('Rendering component with:', {
+    recipes: recipes,
+    isArray: Array.isArray(recipes),
+    length: recipes ? recipes.length : 0,
+    loading
+  });
+
+  if (loading) {
+    return (
+      <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <p style={{ color: 'red' }}>{error}</p>
+      </Container>
+    );
+  }
 
   return (
     <Container>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', marginTop: '20px' }}>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          startIcon={<AddIcon />}
+          onClick={handleAddClick}
+        >
+          新增菜譜
+        </Button>
+      </div>
+
+      <Dialog open={openDialog} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">{currentRecipe.id ? '編輯菜譜' : '新增菜譜'}</DialogTitle>
+        <DialogContent>
+          {currentRecipe.title && (
+            <CardMedia
+              component="img"
+              image={`https://source.unsplash.com/960x640/?${currentRecipe.title}`}
+              alt="Recipe Image"
+              style={{ width: '100%', height: 'auto', marginTop: '20px' }}
+            />
+          )}
+          <TextField
+            autoFocus
+            margin="dense"
+            id="title"
+            label="標題"
+            type="text"
+            fullWidth
+            value={currentRecipe.title || ''}
+            onChange={(e) => setCurrentRecipe({ ...currentRecipe, title: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            id="description"
+            label="描述"
+            type="text"
+            fullWidth
+            value={currentRecipe.description || ''}
+            onChange={(e) => setCurrentRecipe({ ...currentRecipe, description: e.target.value })}
+          />
+          {/* 在这里添加更多字段 */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            取消
+          </Button>
+          <Button onClick={handleSave} color="primary">
+            保存
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>標題</TableCell>
+              <TableCell>描述</TableCell>
+              <TableCell align="right">操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {recipes.map((recipe) => (
-              <TableRow key={recipe.id}>
-                <TableCell component="th" scope="row">
-                  {recipe.title}
-                </TableCell>
-                <TableCell>{recipe.description}</TableCell>
-                <TableCell align="right">
-                  <IconButton aria-label="edit" onClick={() => {/* 编辑逻辑 */}}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton aria-label="delete" onClick={() => handleDelete(recipe.id)}>
-                    <DeleteIcon />
-                  </IconButton>
+            {Array.isArray(recipes) && recipes.length > 0 ? (
+              recipes.map((recipe) => (
+                <TableRow key={recipe.id}>
+                  <TableCell component="th" scope="row">
+                    {recipe.title}
+                  </TableCell>
+                  <TableCell>{recipe.description}</TableCell>
+                  <TableCell align="right">
+                    <IconButton aria-label="edit" onClick={() => handleEditClick(recipe)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => handleDelete(recipe.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} align="center">
+                  沒有資料
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
