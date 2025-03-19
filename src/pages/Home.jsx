@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box,Card,CardMedia ,Grid,CardContent} from '@mui/material';
 
 import { Link ,useNavigate} from 'react-router-dom';
@@ -15,6 +15,43 @@ const recipesData = [
 
 
 function Home() {
+    const [recipesData, setRecipes] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [currentRecipe, setCurrentRecipe] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    // 從 API 取得菜譜資料
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch('http://localhost:5066/api/Recipe');
+        
+        if (!response.ok) {
+          throw new Error(`API 回應錯誤: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('獲取到的菜譜資料:', data);
+        
+        // Ensure we're setting an array
+        if (Array.isArray(data.data)) {
+          setRecipes(data.data);
+        } else {
+          console.error('API 回傳的資料不是陣列:', data);
+          setError('API 回傳的資料格式不正確');
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('獲取菜譜資料時發生錯誤:', error);
+        setError('無法載入菜譜資料，請稍後再試。');
+        setLoading(false);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
+
     const navigate = useNavigate();
   return (
     <Container>
@@ -37,7 +74,7 @@ function Home() {
         <CardMedia
           component="img"
           height="140"
-          image={`https://source.unsplash.com/960x640/?${recipe.title}`}
+          image={`${recipe.image_url}`}
           
           alt={recipe.title}
                           onClick={() => navigate(`/recipe/${recipe.id}`)} // 添加点击事件处理函数

@@ -159,9 +159,9 @@ function MyRecipes() {
           {currentRecipe.title && (
             <CardMedia
               component="img"
-              image={`https://source.unsplash.com/960x640/?${currentRecipe.title}`}
+              image={`${currentRecipe.image_url}`}
               alt="Recipe Image"
-              style={{ width: '100%', height: 'auto', marginTop: '20px' }}
+              style={{ width: '100%', height: '100%', marginTop: '10px' }}
             />
           )}
           <TextField
