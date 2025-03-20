@@ -3,6 +3,7 @@ import { Container, Table, TableBody, TableCell, TableContainer, TableHead, Tabl
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import { fetchRecipes } from '../api';
 
 function MyRecipes() {
   const [recipes, setRecipes] = useState([]);
@@ -10,38 +11,23 @@ function MyRecipes() {
   const [currentRecipe, setCurrentRecipe] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   // 從 API 取得菜譜資料
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await fetch('http://localhost:5066/api/Recipe');
-        
-        if (!response.ok) {
-          throw new Error(`API 回應錯誤: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('獲取到的菜譜資料:', data);
-        
-        // Ensure we're setting an array
-        if (Array.isArray(data.data)) {
-          setRecipes(data.data);
-        } else {
-          console.error('API 回傳的資料不是陣列:', data);
-          setError('API 回傳的資料格式不正確');
-        }
-        
-        setLoading(false);
-      } catch (error) {
-        console.error('獲取菜譜資料時發生錯誤:', error);
-        setError('無法載入菜譜資料，請稍後再試。');
-        setLoading(false);
+useEffect(() => {
+  fetchRecipes()
+    .then(data => {
+      if (Array.isArray(data.data)) {
+        setRecipes(data.data);
+      } else {
+        setError('API 回傳的資料格式不正確');
       }
-    };
-
-    fetchRecipes();
-  }, []);
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('API 錯誤:', error);
+      setError('無法載入菜譜資料，請稍後再試。');
+      setLoading(false);
+    });
+}, []);
 
   // 删除食谱
   const handleDelete = async (id) => {

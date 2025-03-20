@@ -3,38 +3,45 @@
 import React, { useState, useEffect } from 'react';
 import { useParams ,useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, CardMedia, CardContent, List, ListItem } from '@mui/material';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 function RecipeDetail() {
   
   const { id } = useParams(); // 獲取路由參數中的食譜ID
 const [recipe, setRecipe] = useState(null); // 使用 useState 來管理菜譜資料
+ const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
   // 從 API 取得菜譜資料
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await fetch('http://localhost:5066/api/RecipeDetails/'+id);
-        
-        if (!response.ok) {
-          throw new Error(`API 回應錯誤: ${response.status}`);
-        }
-        const data = await response.json();
-              if (data)  {
-          console.log('獲取到的菜譜資料:', data); 
-           setRecipe(data.data); // 使用 setRecipe 更新狀態
-            
-        } else {
-          console.error('API 回傳的資料不是陣列:', data);
-       
-        }
-      
-      } catch (error) {
-        console.error('獲取菜譜資料時發生錯誤:', error);
-       
-      }
-    };
+useEffect(() => {
+  const fetchRecipes = async () => {
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || '/api';
+      const apiUrl = `${baseUrl.replace(/\/$/, '')}/RecipeDetails/${id}`;
 
-    fetchRecipes();
-  }, [id]);
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`API 回應錯誤: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data && data.data) {
+        console.log('獲取到的菜譜資料:', data);
+        setRecipe(data.data);
+      } else {
+        console.error('API 回傳的資料結構錯誤:', data);
+        setError('API 回傳資料格式錯誤');
+      }
+    } catch (error) {
+      console.error('獲取菜譜資料時發生錯誤:', error);
+      setError('無法載入菜譜詳情，請稍後再試。');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchRecipes();
+}, [id]);
+
 
 
  const navigate = useNavigate();
