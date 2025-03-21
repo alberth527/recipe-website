@@ -12,7 +12,9 @@ function Home() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     // 從 API 取得菜譜資料
+    console.log('Home component 載入！');  // 🧪 有印嗎？
   useEffect(() => {
+      console.log('✅ Home useEffect 執行！');
     fetchRecipes()
       .then(data => {
         console.log('獲取菜譜資料All:', data);

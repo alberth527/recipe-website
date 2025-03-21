@@ -1,6 +1,5 @@
 import { useState ,useEffect } from 'react'
 import { Grid } from '@mui/material';
-
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import RecipeList from './pages/RecipeList';
@@ -14,7 +13,7 @@ import './App.css'
 
 function App() {
    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+console.log('App component 載入！');  // 🧪 有無？
   useEffect(() => {
     const checkLoginStatus = () => {
       const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -31,7 +30,7 @@ function App() {
   <>
       <Grid container spacing={3}sx={{ mt: 0 }}>
       <Grid item xs={12} sm={6} md={24} >
-        <Router>
+        <Router basename="/recipe">
       <AppDrawer  sx={{mt:0}}/> 
 
       <Routes>
