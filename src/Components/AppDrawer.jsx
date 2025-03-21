@@ -56,32 +56,50 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function AppDrawer() {
   const [drawerOpen, setDrawerOpen] = useState(false);
- 
+
   const navigate = useNavigate(); // 如果你使用React Router
-   const [userId,setUserId  ] = useState(null);
-     useEffect(() => {
+  const [userId, setUserId] = useState(null);
+   const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
     // 当组件加载时获取用户信息
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     setUserId(userId);
-
-
   }, []);
-
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
-   // 登出函数
+  // 登出函数
   const handleLogout = () => {
     // 清除localStorage中的用户信息或执行其他登出逻辑
-    localStorage.removeItem('isLoggedIn'); 
-     localStorage.removeItem('userId'); 
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userId");
     // 登出后重定向到home页
-    navigate('/'); //使用React Router进行页面跳转
+    navigate("/"); //使用React Router进行页面跳转
+  };
+  // 處理搜尋輸入變更
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  // 處理搜尋提交
+  const handleSearchSubmit = (event) => {
+    if (event.key === "Enter" && searchQuery.trim() !== "") {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
+  // 點擊搜尋圖標時的處理函數
+  const handleSearchIconClick = () => {
+    if (searchQuery.trim() !== "") {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
   };
 
   return (
-    <Box sx={{ flexGrow: 1,mt:0, }}>
+    <Box sx={{ flexGrow: 1, mt: 0 }}>
       <AppBar position="relative">
         <Toolbar>
           <IconButton
@@ -94,54 +112,70 @@ export default function AppDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+          >
             魔法食譜
           </Typography>
           <Search>
-            <SearchIconWrapper>
+            <SearchIconWrapper onClick={handleSearchIconClick}>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
+              inputProps={{ "aria-label": "search" }}
+              onChange={handleSearchChange}
+              onKeyPress={handleSearchSubmit}
             />
           </Search>
         </Toolbar>
       </AppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
         <List>
-                 {userId&&(
-       <ListItem button component={Link} to="/">
-      <ListItemIcon><HomeIcon /></ListItemIcon>
-      <ListItemText primary="首頁" />
-    </ListItem>
-        )}
-           
-    
-           {userId&&(
-          <ListItem button>
-            <ListItemIcon><StarBorderIcon /></ListItemIcon>
-            <ListItemText primary="我的收藏" />
-          </ListItem>
-        )}
-      
-        {userId&&(
-       <ListItem button component={Link} to="/my-recipes">
-      <ListItemIcon><LocalDiningIcon /></ListItemIcon>
-      <ListItemText primary="我的私房菜" />
-    </ListItem>
-        )}
-          {userId&&(
-          <ListItem button>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
-            <ListItemText primary="設置" />
-          </ListItem>
-        )}
-          {userId&&(
-               <ListItem button onClick={handleLogout}>
-            <ListItemIcon><LogoutIcon /></ListItemIcon>
-            <ListItemText primary="登出" />
-          </ListItem>
+          {userId && (
+            <ListItem button component={Link} to="/">
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="首頁" />
+            </ListItem>
+          )}
+
+          {userId && (
+            <ListItem button>
+              <ListItemIcon>
+                <StarBorderIcon />
+              </ListItemIcon>
+              <ListItemText primary="我的收藏" />
+            </ListItem>
+          )}
+
+          {userId && (
+            <ListItem button component={Link} to="/my-recipes">
+              <ListItemIcon>
+                <LocalDiningIcon />
+              </ListItemIcon>
+              <ListItemText primary="我的私房菜" />
+            </ListItem>
+          )}
+          {userId && (
+            <ListItem button>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="設置" />
+            </ListItem>
+          )}
+          {userId && (
+            <ListItem button onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="登出" />
+            </ListItem>
           )}
         </List>
       </Drawer>
