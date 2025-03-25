@@ -1,83 +1,131 @@
-import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Container,
+  Paper,
+  Avatar,
+  Link,
+  Grid,
+  Alert,
+} from "@mui/material";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-    let navigate = useNavigate();
+const Login = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-     // 檢查帳號和密碼
-  if (email === 'demo' && password === 'demo') {
-   
-    // 登錄成功，導航到"recipes"頁面
-     localStorage.setItem('isLoggedIn', true);
-      localStorage.setItem('userId', email);
-      navigate('/');
-      //reload page
-      window.Location.reload();
-  } else {
-    // 登入失敗
-    console.log('Invalid username or password');
-  }
-    console.log('Login details', { email, password });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!formData.email || !formData.password) {
+      setError("電子郵件和密碼為必填");
+      return;
+    }
+
+    try {
+      // 這裡將來會串接實際的 API
+      console.log("登入資料:", formData);
+
+      // 模擬登入成功
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } catch (err) {
+      setError("登入失敗，請檢查您的憑證");
+      console.error("登入錯誤:", err);
+    }
+  };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
-               
+    <Container component="main" maxWidth="sm">
+      <Paper elevation={6} sx={{ p: 4, mt: 8, mb: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            登入
+          </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ width: "100%", mt: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="電子郵件"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="密碼"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              登入
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  忘記密碼？
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link component={RouterLink} to="/register" variant="body2">
+                  {"沒有帳號？立即註冊"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
-}
+};
 
 export default Login;

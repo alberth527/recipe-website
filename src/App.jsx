@@ -8,9 +8,11 @@ import RecipeDetail from "./pages/RecipeDetail";
 import MyRecipes from "./pages/MyRecipes";
 import AppDrawer from "./Components/AppDrawer";
 import SearchResults from "./pages/SearchResults";
-
+import Register from "./pages/Register";
 import "./App.css";
-
+import theme from "./theme";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   console.log("App component 載入！"); // 🧪 有無？
@@ -37,6 +39,7 @@ function App() {
               <Route path="/recipe/:id" element={<RecipeDetail />} />
               <Route path="/my-recipes" element={<MyRecipes />} />
               <Route path="/search" element={<SearchResults />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
           </Router>
         </Grid>
