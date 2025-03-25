@@ -25,13 +25,13 @@ export const fetchRecipeDetails = async (id) => {
 };
 
 // 🔹 使用者登入
-export const login = async (username, password) => {
-  const response = await fetch(`${BASE_URL}/login`, {
+export const login = async (full_name, password) => {
+  const response = await fetch(`${BASE_URL}/Member/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ full_name, password }),
     credentials: 'include', // 包含cookie在請求中
   });
 

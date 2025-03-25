@@ -13,11 +13,12 @@ import {
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { login } from "../api";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: "",
+    full_name: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -34,13 +35,18 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    if (!formData.email || !formData.password) {
-      setError("電子郵件和密碼為必填");
+    if (!formData.full_name || !formData.password) {
+      setError("用戶名稱和密碼為必填");
       return;
     }
 
     try {
       // 這裡將來會串接實際的 API
+     const result = await login(formData.full_name, formData.password);
+     console.log('登入回傳資料:', result);  // ✅ 登入成功後的資料
+     localStorage.setItem("userId", result.data.full_name);  // 將 token 存入 
+     navigate('/');  // 登入成功後導向首頁
+
       console.log("登入資料:", formData);
 
       // 模擬登入成功
@@ -81,12 +87,11 @@ const Login = () => {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="電子郵件"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={formData.email}
+              id="full_name"
+              label="用戶名稱"
+              name="full_name"
+              autoComplete="full_name"
+              value={formData.full_name}
               onChange={handleChange}
             />
             <TextField
