@@ -89,3 +89,71 @@ export const register = async (userData) => {
     throw new Error('註冊過程中發生錯誤，請稍後再試');
   }
 };
+// 🔹 收藏食譜
+export const addFavoriteRecipe = async (recipeId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/MemberFavorite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+        body: JSON.stringify({
+        recipe_id:recipeId,
+        member_id:localStorage.getItem('member_id')
+       
+      }),
+      credentials: 'include', // 包含 cookie 以支援登入狀態
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `收藏失敗: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // 返回收藏成功的資訊
+  } catch (error) {
+    throw new Error(error.message || '收藏過程中發生錯誤，請稍後再試');
+  }
+};
+// 🔹 取消收藏食譜
+export const removeFavoriteRecipe = async (recipeId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/MemberFavorite/${recipeId}`, {
+      method: 'DELETE',
+      credentials: 'include', // 包含 cookie 以支援登入狀態
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `取消收藏失敗: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // 返回取消收藏成功的資訊
+  } catch (error) {
+    throw new Error(error.message || '取消收藏過程中發生錯誤，請稍後再試');
+  }
+};
+// 🔹 獲取使用者收藏的食譜列表
+export const fetchUserFavorites = async () => {
+  try {
+    // 從 localStorage 獲取會員 ID，若不存在則使用 0
+    const memberId = localStorage.getItem('member_id') || 0;
+    
+    const response = await fetch(`${BASE_URL}/MemberFavorite/search?memberId=${memberId}`, {
+      method: 'GET',
+      credentials: 'include', // 包含 cookie 以支援登入狀態
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `獲取收藏列表失敗: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // 返回使用者的收藏列表
+  } catch (error) {
+    throw new Error(error.message || '獲取收藏列表過程中發生錯誤，請稍後再試');
+  }
+};

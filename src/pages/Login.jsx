@@ -42,10 +42,11 @@ const Login = () => {
 
     try {
       // 這裡將來會串接實際的 API
-     const result = await login(formData.full_name, formData.password);
-     console.log('登入回傳資料:', result);  // ✅ 登入成功後的資料
-     localStorage.setItem("userId", result.data.full_name);  // 將 token 存入 
-     navigate('/');  // 登入成功後導向首頁
+      const result = await login(formData.full_name, formData.password);
+      console.log("登入回傳資料:", result); // ✅ 登入成功後的資料
+      localStorage.setItem("userId", result.data.full_name); 
+      localStorage.setItem("member_id", result.data.member_id); 
+      navigate("/"); // 登入成功後導向首頁
 
       console.log("登入資料:", formData);
 
