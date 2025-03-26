@@ -145,7 +145,7 @@ export default function AppDrawer() {
           )}
 
           {userId && (
-            <ListItem button>
+            <ListItem button component={Link} to="/favorites">
               <ListItemIcon>
                 <StarBorderIcon />
               </ListItemIcon>

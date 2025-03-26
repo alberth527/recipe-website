@@ -9,6 +9,7 @@ import MyRecipes from "./pages/MyRecipes";
 import AppDrawer from "./Components/AppDrawer";
 import SearchResults from "./pages/SearchResults";
 import Register from "./pages/Register";
+import Favorites from "./pages/Favorites";
 import "./App.css";
 import theme from "./theme";
 import { ThemeProvider } from "@mui/material/styles";
@@ -40,6 +41,7 @@ function App() {
               <Route path="/my-recipes" element={<MyRecipes />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/favorites" element={<Favorites />} />
             </Routes>
           </Router>
         </Grid>
